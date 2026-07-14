@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "Nova Poshta API - Create Shipment Workflow",
+    "name": "Nova Poshta API",
     "description": "Postman collection for the basic Nova Poshta API workflow: find cities and warehouses, get sender data, create a recipient, create an Internet Document/TTN, and track the shipment. The API key is stored only in the NP_API_KEY collection variable and must not be committed.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
