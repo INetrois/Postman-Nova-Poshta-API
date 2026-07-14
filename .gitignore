@@ -1,0 +1,5 @@
+.postman/
+postman/
+*.postman_environment.json
+*.postman_globals.json
+*.local.json
