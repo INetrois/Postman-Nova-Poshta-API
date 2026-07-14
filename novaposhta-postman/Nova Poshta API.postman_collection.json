@@ -7,7 +7,7 @@
   "item": [
     {
       "name": "01 - Find Sender City",
-      "description": "Find the sender city and copy its Ref. The test script saves the first returned Ref to SENDER_CITY_REF for convenience.",
+      "description": "Find the sender city and copy its Ref to SENDER_CITY_REF manually.",
       "request": {
         "method": "POST",
         "header": [
@@ -49,8 +49,7 @@
               "const json = pm.response.json();",
               "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
               "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
-              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
-              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"SENDER_CITY_REF\", json.data[0].Ref); console.log(\"Saved SENDER_CITY_REF:\", json.data[0].Ref); }"
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }"
             ]
           }
         }
@@ -101,8 +100,7 @@
               "const json = pm.response.json();",
               "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
               "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
-              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
-              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"SENDER_WAREHOUSE_REF\", json.data[0].Ref); console.log(\"Saved SENDER_WAREHOUSE_REF:\", json.data[0].Ref); }"
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }"
             ]
           }
         }
@@ -153,8 +151,7 @@
               "const json = pm.response.json();",
               "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
               "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
-              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
-              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"SENDER_REF\", json.data[0].Ref); console.log(\"Saved SENDER_REF:\", json.data[0].Ref); }"
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }"
             ]
           }
         }
@@ -205,8 +202,7 @@
               "const json = pm.response.json();",
               "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
               "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
-              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
-              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"SENDER_CONTACT_REF\", json.data[0].Ref); console.log(\"Saved SENDER_CONTACT_REF:\", json.data[0].Ref); }"
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }"
             ]
           }
         }
@@ -257,12 +253,7 @@
               "const json = pm.response.json();",
               "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
               "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
-              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
-              "if (json.success && Array.isArray(json.data) && json.data[0]) {",
-              "  if (json.data[0].Ref) pm.collectionVariables.set(\"RECIPIENT_REF\", json.data[0].Ref);",
-              "  const contactRef = json.data[0]?.ContactPerson?.data?.[0]?.Ref || json.data[0]?.ContactPerson?.Ref;",
-              "  if (contactRef) pm.collectionVariables.set(\"RECIPIENT_CONTACT_REF\", contactRef);",
-              "}"
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }"
             ]
           }
         }
@@ -271,7 +262,7 @@
     },
     {
       "name": "06 - Find Recipient City",
-      "description": "Find the recipient city and copy its Ref. The test script saves the first returned Ref to RECIPIENT_CITY_REF for convenience.",
+      "description": "Find the recipient city and copy its Ref to RECIPIENT_CITY_REF manually.",
       "request": {
         "method": "POST",
         "header": [
@@ -313,8 +304,7 @@
               "const json = pm.response.json();",
               "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
               "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
-              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
-              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"RECIPIENT_CITY_REF\", json.data[0].Ref); console.log(\"Saved RECIPIENT_CITY_REF:\", json.data[0].Ref); }"
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }"
             ]
           }
         }
@@ -365,8 +355,7 @@
               "const json = pm.response.json();",
               "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
               "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
-              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
-              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"RECIPIENT_WAREHOUSE_REF\", json.data[0].Ref); console.log(\"Saved RECIPIENT_WAREHOUSE_REF:\", json.data[0].Ref); }"
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }"
             ]
           }
         }
@@ -468,8 +457,7 @@
               "const json = pm.response.json();",
               "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
               "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
-              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
-              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"RECIPIENT_CONTACT_REF\", json.data[0].Ref); console.log(\"Saved RECIPIENT_CONTACT_REF:\", json.data[0].Ref); }"
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }"
             ]
           }
         }
@@ -520,11 +508,7 @@
               "const json = pm.response.json();",
               "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
               "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
-              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
-              "if (json.success && Array.isArray(json.data) && json.data[0]?.IntDocNumber) {",
-              "  pm.collectionVariables.set(\"DOCUMENT_NUMBER\", json.data[0].IntDocNumber);",
-              "  console.log(\"Saved DOCUMENT_NUMBER:\", json.data[0].IntDocNumber);",
-              "}"
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }"
             ]
           }
         }

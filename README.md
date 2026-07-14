@@ -1,5 +1,4 @@
-![GitHub Repo Banner](https://ghrb.waren.build/banner?header=%21%5Bpostman%5D+Nova+Poshta+API+Collection&subheader=Ready-to-use+requests+for+the+Nova+Poshta+API&bg=F38020-FBAB41&color=FFFFFF&headerfont=Space+Grotesk&subheaderfont=Stack+Sans+Headline&watermarkpos=bottom-right)
-<!-- Created with GitHub Repo Banner by Waren Gonzaga: https://ghrb.waren.build -->
+# Nova Poshta API Postman Collection
 
 This repository contains a Postman collection for the basic Nova Poshta API workflow:
 
@@ -81,7 +80,7 @@ The collection uses variables so that the workflow is easier to follow:
 | `CARGO_COST` | Declared cargo cost. |
 | `DOCUMENT_NUMBER` | TTN number returned by `10 - Create Internet Document`. |
 
-Some request tests save the first returned `Ref` into collection variables automatically. Still verify the response manually and choose the correct city, warehouse, counterparty, or contact person before creating a real TTN.
+The collection does not copy response values into variables automatically. After each request, inspect the response body, copy the required value, and paste it into the matching collection variable manually. This is intentional: it makes the API workflow explicit and avoids silently using the wrong city, warehouse, counterparty, contact person, or TTN number.
 
 ## Workflow
 
@@ -123,7 +122,7 @@ Set recipient variables in Postman:
 
 Run `05 - Create Recipient`.
 
-The response should return a recipient `Ref` and usually a contact person `Ref`. The collection test tries to save them into:
+The response should return a recipient `Ref` and usually a contact person `Ref`. Copy them manually into:
 
 - `RECIPIENT_REF`
 - `RECIPIENT_CONTACT_REF`
@@ -161,7 +160,9 @@ Before running `10 - Create Internet Document`, verify these variables:
 
 Run `10 - Create Internet Document`.
 
-If the request is successful, Nova Poshta returns the TTN number as `IntDocNumber`. The collection test saves it into `DOCUMENT_NUMBER`.
+If the request is successful, Nova Poshta returns the TTN number as `IntDocNumber`.
+
+Copy `IntDocNumber` manually into `DOCUMENT_NUMBER` before running the tracking request.
 
 ### 7. Track the TTN
 
