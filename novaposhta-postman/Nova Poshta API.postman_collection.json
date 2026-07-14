@@ -1,0 +1,677 @@
+{
+  "info": {
+    "name": "Nova Poshta API - Create Shipment Workflow",
+    "description": "Postman collection for the basic Nova Poshta API workflow: find cities and warehouses, get sender data, create a recipient, create an Internet Document/TTN, and track the shipment. The API key is stored only in the NP_API_KEY collection variable and must not be committed.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 - Find Sender City",
+      "description": "Find the sender city and copy its Ref. The test script saves the first returned Ref to SENDER_CITY_REF for convenience.",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{NP_API_KEY}}\",\n  \"modelName\": \"Address\",\n  \"calledMethod\": \"getCities\",\n  \"methodProperties\": {\n    \"FindByString\": \"{{SENDER_CITY_NAME}}\",\n    \"Limit\": \"20\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.novaposhta.ua/v2.0/json/",
+          "protocol": "https",
+          "host": [
+            "api",
+            "novaposhta",
+            "ua"
+          ],
+          "path": [
+            "v2.0",
+            "json",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
+              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"SENDER_CITY_REF\", json.data[0].Ref); console.log(\"Saved SENDER_CITY_REF:\", json.data[0].Ref); }"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "02 - Get Sender Warehouses",
+      "description": "Get warehouses for SENDER_CITY_REF. Choose the warehouse you will ship from and put its Ref into SENDER_WAREHOUSE_REF.",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{NP_API_KEY}}\",\n  \"modelName\": \"Address\",\n  \"calledMethod\": \"getWarehouses\",\n  \"methodProperties\": {\n    \"CityRef\": \"{{SENDER_CITY_REF}}\",\n    \"Limit\": \"50\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.novaposhta.ua/v2.0/json/",
+          "protocol": "https",
+          "host": [
+            "api",
+            "novaposhta",
+            "ua"
+          ],
+          "path": [
+            "v2.0",
+            "json",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
+              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"SENDER_WAREHOUSE_REF\", json.data[0].Ref); console.log(\"Saved SENDER_WAREHOUSE_REF:\", json.data[0].Ref); }"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "03 - Get Sender Counterparties",
+      "description": "Get sender counterparties available for your API key. Copy the correct Ref to SENDER_REF.",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{NP_API_KEY}}\",\n  \"modelName\": \"Counterparty\",\n  \"calledMethod\": \"getCounterparties\",\n  \"methodProperties\": {\n    \"CounterpartyProperty\": \"Sender\",\n    \"Page\": \"1\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.novaposhta.ua/v2.0/json/",
+          "protocol": "https",
+          "host": [
+            "api",
+            "novaposhta",
+            "ua"
+          ],
+          "path": [
+            "v2.0",
+            "json",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
+              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"SENDER_REF\", json.data[0].Ref); console.log(\"Saved SENDER_REF:\", json.data[0].Ref); }"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "04 - Get Sender Contact Persons",
+      "description": "Get sender contact persons for SENDER_REF. Copy the correct Ref to SENDER_CONTACT_REF and set SENDER_PHONE manually.",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{NP_API_KEY}}\",\n  \"modelName\": \"Counterparty\",\n  \"calledMethod\": \"getCounterpartyContactPersons\",\n  \"methodProperties\": {\n    \"Ref\": \"{{SENDER_REF}}\",\n    \"Page\": \"1\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.novaposhta.ua/v2.0/json/",
+          "protocol": "https",
+          "host": [
+            "api",
+            "novaposhta",
+            "ua"
+          ],
+          "path": [
+            "v2.0",
+            "json",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
+              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"SENDER_CONTACT_REF\", json.data[0].Ref); console.log(\"Saved SENDER_CONTACT_REF:\", json.data[0].Ref); }"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "05 - Create Recipient",
+      "description": "Create a recipient counterparty. Use non-public personal data only in Postman local current values, not in committed collection values.",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{NP_API_KEY}}\",\n  \"modelName\": \"Counterparty\",\n  \"calledMethod\": \"save\",\n  \"methodProperties\": {\n    \"FirstName\": \"{{RECIPIENT_FIRST_NAME}}\",\n    \"MiddleName\": \"{{RECIPIENT_MIDDLE_NAME}}\",\n    \"LastName\": \"{{RECIPIENT_LAST_NAME}}\",\n    \"Phone\": \"{{RECIPIENT_PHONE}}\",\n    \"Email\": \"\",\n    \"CounterpartyType\": \"PrivatePerson\",\n    \"CounterpartyProperty\": \"Recipient\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.novaposhta.ua/v2.0/json/",
+          "protocol": "https",
+          "host": [
+            "api",
+            "novaposhta",
+            "ua"
+          ],
+          "path": [
+            "v2.0",
+            "json",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
+              "if (json.success && Array.isArray(json.data) && json.data[0]) {",
+              "  if (json.data[0].Ref) pm.collectionVariables.set(\"RECIPIENT_REF\", json.data[0].Ref);",
+              "  const contactRef = json.data[0]?.ContactPerson?.data?.[0]?.Ref || json.data[0]?.ContactPerson?.Ref;",
+              "  if (contactRef) pm.collectionVariables.set(\"RECIPIENT_CONTACT_REF\", contactRef);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "06 - Find Recipient City",
+      "description": "Find the recipient city and copy its Ref. The test script saves the first returned Ref to RECIPIENT_CITY_REF for convenience.",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{NP_API_KEY}}\",\n  \"modelName\": \"Address\",\n  \"calledMethod\": \"getCities\",\n  \"methodProperties\": {\n    \"FindByString\": \"{{RECIPIENT_CITY_NAME}}\",\n    \"Limit\": \"20\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.novaposhta.ua/v2.0/json/",
+          "protocol": "https",
+          "host": [
+            "api",
+            "novaposhta",
+            "ua"
+          ],
+          "path": [
+            "v2.0",
+            "json",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
+              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"RECIPIENT_CITY_REF\", json.data[0].Ref); console.log(\"Saved RECIPIENT_CITY_REF:\", json.data[0].Ref); }"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "07 - Get Recipient Warehouses",
+      "description": "Get warehouses for RECIPIENT_CITY_REF. Choose the destination warehouse and put its Ref into RECIPIENT_WAREHOUSE_REF.",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{NP_API_KEY}}\",\n  \"modelName\": \"Address\",\n  \"calledMethod\": \"getWarehouses\",\n  \"methodProperties\": {\n    \"CityRef\": \"{{RECIPIENT_CITY_REF}}\",\n    \"FindByString\": \"{{RECIPIENT_WAREHOUSE_SEARCH}}\",\n    \"Limit\": \"50\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.novaposhta.ua/v2.0/json/",
+          "protocol": "https",
+          "host": [
+            "api",
+            "novaposhta",
+            "ua"
+          ],
+          "path": [
+            "v2.0",
+            "json",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
+              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"RECIPIENT_WAREHOUSE_REF\", json.data[0].Ref); console.log(\"Saved RECIPIENT_WAREHOUSE_REF:\", json.data[0].Ref); }"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "08 - Get Recipient Counterparties",
+      "description": "Optional check: list recipient counterparties saved in your account.",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{NP_API_KEY}}\",\n  \"modelName\": \"Counterparty\",\n  \"calledMethod\": \"getCounterparties\",\n  \"methodProperties\": {\n    \"CounterpartyProperty\": \"Recipient\",\n    \"Page\": \"1\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.novaposhta.ua/v2.0/json/",
+          "protocol": "https",
+          "host": [
+            "api",
+            "novaposhta",
+            "ua"
+          ],
+          "path": [
+            "v2.0",
+            "json",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "09 - Get Recipient Contact Persons",
+      "description": "Optional check: get contact persons for RECIPIENT_REF. Useful if you selected an existing recipient instead of creating a new one.",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{NP_API_KEY}}\",\n  \"modelName\": \"Counterparty\",\n  \"calledMethod\": \"getCounterpartyContactPersons\",\n  \"methodProperties\": {\n    \"Ref\": \"{{RECIPIENT_REF}}\",\n    \"Page\": \"1\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.novaposhta.ua/v2.0/json/",
+          "protocol": "https",
+          "host": [
+            "api",
+            "novaposhta",
+            "ua"
+          ],
+          "path": [
+            "v2.0",
+            "json",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
+              "if (json.success && Array.isArray(json.data) && json.data[0] && json.data[0].Ref) { pm.collectionVariables.set(\"RECIPIENT_CONTACT_REF\", json.data[0].Ref); console.log(\"Saved RECIPIENT_CONTACT_REF:\", json.data[0].Ref); }"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "10 - Create Internet Document",
+      "description": "Create the Nova Poshta Internet Document/TTN. Before sending, verify all sender, recipient, city, warehouse, phone, cost, and cargo variables.",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{NP_API_KEY}}\",\n  \"modelName\": \"InternetDocument\",\n  \"calledMethod\": \"save\",\n  \"methodProperties\": {\n    \"PayerType\": \"Sender\",\n    \"PaymentMethod\": \"Cash\",\n    \"CargoType\": \"Parcel\",\n    \"Weight\": \"{{CARGO_WEIGHT}}\",\n    \"ServiceType\": \"WarehouseWarehouse\",\n    \"SeatsAmount\": \"{{SEATS_AMOUNT}}\",\n    \"Description\": \"{{CARGO_DESCRIPTION}}\",\n    \"Cost\": \"{{CARGO_COST}}\",\n    \"CitySender\": \"{{SENDER_CITY_REF}}\",\n    \"Sender\": \"{{SENDER_REF}}\",\n    \"SenderAddress\": \"{{SENDER_WAREHOUSE_REF}}\",\n    \"ContactSender\": \"{{SENDER_CONTACT_REF}}\",\n    \"SendersPhone\": \"{{SENDER_PHONE}}\",\n    \"CityRecipient\": \"{{RECIPIENT_CITY_REF}}\",\n    \"Recipient\": \"{{RECIPIENT_REF}}\",\n    \"RecipientAddress\": \"{{RECIPIENT_WAREHOUSE_REF}}\",\n    \"ContactRecipient\": \"{{RECIPIENT_CONTACT_REF}}\",\n    \"RecipientsPhone\": \"{{RECIPIENT_PHONE}}\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.novaposhta.ua/v2.0/json/",
+          "protocol": "https",
+          "host": [
+            "api",
+            "novaposhta",
+            "ua"
+          ],
+          "path": [
+            "v2.0",
+            "json",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }",
+              "if (json.success && Array.isArray(json.data) && json.data[0]?.IntDocNumber) {",
+              "  pm.collectionVariables.set(\"DOCUMENT_NUMBER\", json.data[0].IntDocNumber);",
+              "  console.log(\"Saved DOCUMENT_NUMBER:\", json.data[0].IntDocNumber);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "11 - Track Internet Document",
+      "description": "Track the TTN created in the previous step. Use DOCUMENT_NUMBER and RECIPIENT_PHONE or SENDER_PHONE depending on the shipment data.",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{NP_API_KEY}}\",\n  \"modelName\": \"TrackingDocument\",\n  \"calledMethod\": \"getStatusDocuments\",\n  \"methodProperties\": {\n    \"Documents\": [\n      {\n        \"DocumentNumber\": \"{{DOCUMENT_NUMBER}}\",\n        \"Phone\": \"{{RECIPIENT_PHONE}}\"\n      }\n    ]\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.novaposhta.ua/v2.0/json/",
+          "protocol": "https",
+          "host": [
+            "api",
+            "novaposhta",
+            "ua"
+          ],
+          "path": [
+            "v2.0",
+            "json",
+            ""
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test(\"HTTP status is 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Nova Poshta success is true\", () => pm.expect(json.success, JSON.stringify(json.errors || json.warnings || [])).to.eql(true));",
+              "if (json.success === false) { console.error(\"Nova Poshta errors:\", json.errors); }"
+            ]
+          }
+        }
+      ],
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "NP_API_KEY",
+      "value": "",
+      "type": "secret"
+    },
+    {
+      "key": "SENDER_CITY_NAME",
+      "value": "Kyiv"
+    },
+    {
+      "key": "SENDER_CITY_REF",
+      "value": ""
+    },
+    {
+      "key": "SENDER_WAREHOUSE_REF",
+      "value": ""
+    },
+    {
+      "key": "SENDER_REF",
+      "value": ""
+    },
+    {
+      "key": "SENDER_CONTACT_REF",
+      "value": ""
+    },
+    {
+      "key": "SENDER_PHONE",
+      "value": ""
+    },
+    {
+      "key": "RECIPIENT_FIRST_NAME",
+      "value": "Test"
+    },
+    {
+      "key": "RECIPIENT_MIDDLE_NAME",
+      "value": "Testovych"
+    },
+    {
+      "key": "RECIPIENT_LAST_NAME",
+      "value": "Recipient"
+    },
+    {
+      "key": "RECIPIENT_PHONE",
+      "value": ""
+    },
+    {
+      "key": "RECIPIENT_CITY_NAME",
+      "value": "Kyiv"
+    },
+    {
+      "key": "RECIPIENT_CITY_REF",
+      "value": ""
+    },
+    {
+      "key": "RECIPIENT_WAREHOUSE_SEARCH",
+      "value": ""
+    },
+    {
+      "key": "RECIPIENT_WAREHOUSE_REF",
+      "value": ""
+    },
+    {
+      "key": "RECIPIENT_REF",
+      "value": ""
+    },
+    {
+      "key": "RECIPIENT_CONTACT_REF",
+      "value": ""
+    },
+    {
+      "key": "CARGO_WEIGHT",
+      "value": "1"
+    },
+    {
+      "key": "SEATS_AMOUNT",
+      "value": "1"
+    },
+    {
+      "key": "CARGO_DESCRIPTION",
+      "value": "Clothes"
+    },
+    {
+      "key": "CARGO_COST",
+      "value": "500"
+    },
+    {
+      "key": "DOCUMENT_NUMBER",
+      "value": ""
+    }
+  ]
+}
