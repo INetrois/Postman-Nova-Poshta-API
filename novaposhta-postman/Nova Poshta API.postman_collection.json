@@ -591,7 +591,7 @@
     },
     {
       "key": "SENDER_CITY_NAME",
-      "value": "Kyiv"
+      "value": "Київ"
     },
     {
       "key": "SENDER_CITY_REF",
@@ -615,15 +615,15 @@
     },
     {
       "key": "RECIPIENT_FIRST_NAME",
-      "value": "Test"
+      "value": "Тест"
     },
     {
       "key": "RECIPIENT_MIDDLE_NAME",
-      "value": "Testovych"
+      "value": "Тестович"
     },
     {
       "key": "RECIPIENT_LAST_NAME",
-      "value": "Recipient"
+      "value": "Отримувач"
     },
     {
       "key": "RECIPIENT_PHONE",
@@ -631,7 +631,7 @@
     },
     {
       "key": "RECIPIENT_CITY_NAME",
-      "value": "Kyiv"
+      "value": "Київ"
     },
     {
       "key": "RECIPIENT_CITY_REF",
@@ -663,7 +663,7 @@
     },
     {
       "key": "CARGO_DESCRIPTION",
-      "value": "Clothes"
+      "value": "Одяг"
     },
     {
       "key": "CARGO_COST",
